@@ -1,3 +1,5 @@
+# rename the folder into the structure of folder/videos that can be pre-processed for wav2lip training
+
 import os
 
 # Specify the folder containing your MP4 files

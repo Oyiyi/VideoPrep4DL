@@ -13,7 +13,7 @@ def download_video(video_url, output_folder):
     video_file_path = os.path.join(output_folder, "1.mp4")
     if not os.path.exists(video_file_path):
         stream = yt.streams.get_highest_resolution()
-        print(f"Downloading video '{title}' as '1.mp4'...")
+        #yt.streams.filter(res="1080p").first().download(output_path=output_folder, filename="1")
         stream.download(output_path=output_folder, filename="1")
         print(f"Video '{title}' downloaded as '1.mp4' in folder '{output_folder}'.")
     else:
