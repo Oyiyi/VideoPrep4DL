@@ -1,4 +1,6 @@
-# todos 1. edit the output of the ffmpeg merge; 2. maybe we could have the audio saved and simplify the rest of streamline?
+# todos 1. edit the output of the ffmpeg merge - done;
+# 1.2 clean up the files
+# 1.3. maybe we could have the audio saved and simplify the rest of streamline?
 # 2. reduce the music background
 # 3. delete the screens that has unclear faces (mask, unclear faces in the sub-screen) / multiple faces - test it and leave room for mannual check
 # potential error in the future - if the highest resolution doesn't have mp4 format and mweb only?
@@ -17,21 +19,12 @@ def download_video(url, file_folder):
     file_name = f"{title}.mp4"
 
     # Show the available formats and find the highest resolution
-    print("Available formats:") 
-    """
-    13. Resolution: 240p, Format: video/webm
-    14. Resolution: 144p, Format: video/mp4
-    15. Resolution: 144p, Format: video/webm
-    16. Resolution: None, Format: audio/mp4
-    17. Resolution: None, Format: audio/mp4
-    18. Resolution: None, Format: audio/webm
-    19. Resolution: None, Format: audio/webm
-    20. Resolution: None, Format: audio/webm
-    """
     formats = yt.streams.all()
+    #print("Available formats:") 
+    # examples of Youtube video / audio resolution and format: 13. Resolution: 240p, Format: video/webm 14. Resolution: 1080p, Format: video/mp4 16. Resolution: None, Format: audio/mp4 19. Resolution: None, Format: audio/webm
     highest_resolution = 0  # Initialize the highest resolution as 0
     for i, stream in enumerate(formats):
-        print(f"{i+1}. Resolution: {stream.resolution}, Format: {stream.mime_type}")
+        #print(f"{i+1}. Resolution: {stream.resolution}, Format: {stream.mime_type}")
         # Parse the resolution and compare to find the highest
         try:
             if stream.resolution is not None: # exclude the errors from cases: "Resolution: None, Format: audio/webm"
@@ -45,19 +38,19 @@ def download_video(url, file_folder):
 
     # Set the highest resolution as "res"
     res = f"{highest_resolution}p"
-    print(f"Highest Resolution: {res}")
+    #print(f"Highest Resolution: {res}")
 
     # Download based on resolution </>= 1080p (w/ first checking if the video file exists and download the video if not)
     if not os.path.exists(os.path.join(file_folder, file_name)):
         #stream = yt.streams.get_highest_resolution()  # NOT USE as "highest_resolution" capped at 720p
-        print(f"Downloading a video @{res} resolution......")
+        #print(f"Downloading a video @{res} resolution......")
         if highest_resolution < 1080:  # Check against the highest resolution
-            print("<1080p download model is used")
+            #print("<1080p download model is used")
             download_lr(stream, file_folder)
         else:
-            print(">=1080p download model is used")
+            #print(">=1080p download model is used")
             download_hr(res, yt, file_folder)
-        print("Video downloaded.")
+        print("A video @{res} resolution downloaded.")
     else:
         print("Skipped downloading video as it was already downloaded.")
 
@@ -66,14 +59,14 @@ def download_lr(stream, file_folder):
     stream.download(output_path=file_folder)
 
 def download_hr(res, yt, file_folder):
-    print(res)
+    #print(res)
     video = yt.streams.filter(res=res, mime_type="video/mp4").first()
     audio = yt.streams.filter(only_audio=True).first()
     video_filename_prefix = "video_"
     audio_filename_prefix = "audio_"
     video.download(output_path=file_folder, filename_prefix=video_filename_prefix)
     audio.download(output_path=file_folder, filename_prefix=audio_filename_prefix)
-    print("Video and audio downloaded successfully!")
+    #print("Video and audio downloaded successfully!")
 
     # Merge video and audio
     os.chdir(file_folder)
@@ -84,8 +77,7 @@ def download_hr(res, yt, file_folder):
     output_file = f"merged_{video_base}.mp4"
 
     subprocess.call(["ffmpeg", "-i", f"{video_filename_prefix}{video.default_filename}", "-i", f"{audio_filename_prefix}{audio.default_filename}", "-c:v", "copy", "-c:a", "copy", output_file])
-    print(f"Video and audio merged successfully and saved as 'merged_{video_base}.mp4'")
-
+    print(f"video @{res} resolution and audio merged successfully and saved as 'merged_{video_base}.mp4'")
 
 # Download captions (subtitles) if available
 def download_captions(yt, file_folder):
