@@ -1,7 +1,7 @@
 from pytube import Playlist
 
 # Playlist URL
-playlist_url = "https://www.youtube.com/playlist?list=PL0eGJygpmOH6JZoTiBexaSQveslxxaLrf"
+playlist_url = ""
 
 # Create a Playlist object
 playlist = Playlist(playlist_url)
